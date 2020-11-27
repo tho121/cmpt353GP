@@ -11,8 +11,7 @@
 - Calculate walking speed (m/s) from just the accelerometer? How accurate can you get? Can you then determine differences between subjects as above?
 
 ## How to use
-Libraries:
-- Matplotlib, Numpy, Pandas, Scikit-learn, SciPy 
+Libraries:  Matplotlib, Numpy, Pandas, Scikit-learn, SciPy 
 
 ```
 $ python3 TEMP.py
