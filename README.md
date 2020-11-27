@@ -1,4 +1,4 @@
-# CMPT 353 Final Project - Project Topic: Sensors, Noise, and Walking
+# CMPT 353 Final Project - Sensors, Noise, and Walking
 
 - Collect 3D accelerometer data using Physics Toolbox Sensor Suite 
 - Conduct noise filtering using a Butterworth filter
