@@ -13,6 +13,7 @@
 ## How to use
 Libraries:  Matplotlib, Numpy, Pandas, Scikit-learn, SciPy 
 
+Step 1: Clean the raw datasets and save into a 'clean data' folder
 ```
-$ python3 TEMP.py
+$ python3 data_clean.py
 ```
