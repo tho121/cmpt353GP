@@ -11,18 +11,15 @@ import re
 import os
 import glob
 
-# Referenced from: https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
-files = glob.glob('./raw data/*.csv')
-path_re = re.compile(r"^(.+/)([^-]*)")
 
-
+# Referenced from: https://stackoverflow.com/questions/37372603/how-to-remove-specific-substrings-from-a-set-of-strings-in-python
 def getfilename(path):
-    m = path_re.match(path)
-    return m.group(2)
+    return path.replace('./raw data/','')
 
 
 def trimtime(df):
-    return df.loc[(df['time'] > 7) & (df['time'] < (df['time'].max()-7) )].reset_index(drop=True)
+    trimtime = 7
+    return df.loc[(df['time'] > trimtime) & (df['time'] < (df['time'].max() - trimtime) )].reset_index(drop=True)
 
 
 # Butterfly filter modified from: https://ggbaker.ca/data-science/content/filtering.html#filtering
@@ -43,13 +40,15 @@ def trimnoise(df):
 
 
 def main():
+    # Referenced from: https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
+    files = glob.glob('./raw data/*.csv')
+
     os.mkdir('clean data')
     for i in files:
-        filename = getfilename(i)
         df = pd.read_csv(i).dropna(axis='columns')
         df = trimtime(df)
         df = trimnoise(df)
-        df.to_csv(os.path.join(f'./clean data/{filename}'), index=False)
+        df.to_csv(os.path.join(f'./clean data/{getfilename(i)}'), index=False)
 
 
 if __name__ == '__main__':
