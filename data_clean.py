@@ -41,7 +41,57 @@ def trimnoise(df):
     df['gFz_f'] = low_pass_fliter(df['gFz'])
     return df
 
+def clean_data(filename):
+    df = pd.read_csv(filename)
+    df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+    df = df.rename(columns={'Speed (m/s)': "speed"})
+    df = df.drop(df[df.Latitude == 0.0].index)
+    
+    df['v3'] = df.apply(lambda row: (row['ax']**2 + row['ay']**2 + row['az']**2)**0.5, axis=1)
+    
+    df['time'] = df['time'].diff()
+    
+    groupSize = 12
+    grouped = df.groupby(df.index // groupSize)
+    df_grouped = grouped.mean()
+    
+    df_grouped['time'] = grouped.sum()['time']
+    
+    return df_grouped
+    
 
+def get_step_count(series):
+    series = series.to_numpy()
+    peaks,_ = signal.find_peaks(series)
+    return len(peaks)
+
+def get_features(data, size):
+    
+    data['distance'] = getDistanceFromLatLon(data['Latitude'], data['Longitude'])
+    
+    grouped = data.groupby(data.index // size)
+    
+    df_features = grouped.sum()
+    df_features['steps'] = grouped['v3'].apply(get_step_count)
+    df_features['speed'] = grouped['speed'].mean()
+    
+    return df_features[['speed','distance','steps']]
+    
+def getDistanceFromLatLon(lat,lon):
+    R = 6371; # Radius of the earth in km
+    dLat = deg2rad((lat.shift(-1) - lat).dropna());  # deg2rad below
+    dLon = deg2rad((lon.shift(-1) - lon).dropna()); 
+    a = np.sin(dLat/2) * np.sin(dLat/2) + np.cos(deg2rad(lat)) * np.cos(deg2rad(lat.shift(-1))) * np.sin(dLon/2) * np.sin(dLon/2)
+    
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a)); 
+    d = R * c * 1000; # Distance in meters
+    return d
+
+
+def deg2rad(deg):
+    return deg * (np.pi/180)
+    
+    
 def main():
     # Referenced from: https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
     files = glob.glob('./raw data/*.csv')
