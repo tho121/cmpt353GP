@@ -36,6 +36,9 @@ def trimnoise(df):
     df['wx_f'] = low_pass_fliter(df['wx'])
     df['wy_f'] = low_pass_fliter(df['wy'])
     df['wz_f'] = low_pass_fliter(df['wz'])
+    df['gFx_f'] = low_pass_fliter(df['gFx'])
+    df['gFy_f'] = low_pass_fliter(df['gFy'])
+    df['gFz_f'] = low_pass_fliter(df['gFz'])
     return df
 
 
