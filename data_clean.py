@@ -77,12 +77,12 @@ def get_features(data, size):
     df_features = rollingData.sum()
     df_features['steps'] = rollingData['v3'].apply(get_step_count)
     df_features['speed'] = rollingData['speed'].mean()
+    df_features['v3'] = rollingData['v3'].mean()
     
     df_features = df_features.loc[df_features['speed'] > 0.01]
-    
     df_features = df_features.dropna()
     
-    return df_features[['speed','distance','steps', 'time']]
+    return df_features[['speed','distance','steps', 'time', 'v3']]
     
 def getDistanceFromLatLon(lat,lon):
     R = 6371; # Radius of the earth in km
