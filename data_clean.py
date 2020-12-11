@@ -69,11 +69,18 @@ def get_features(data, size):
     
     data['distance'] = getDistanceFromLatLon(data['Latitude'], data['Longitude'])
     
-    grouped = data.groupby(data.index // size)
+    #grouped = data.groupby(data.index // size)
+    #df_features = grouped.sum()
+    #df_features['steps'] = grouped['v3'].apply(get_step_count)
+    #df_features['speed'] = grouped['speed'].mean()
+    rollingData = data.rolling(size)
+    df_features = rollingData.sum()
+    df_features['steps'] = rollingData['v3'].apply(get_step_count)
+    df_features['speed'] = rollingData['speed'].mean()
     
-    df_features = grouped.sum()
-    df_features['steps'] = grouped['v3'].apply(get_step_count)
-    df_features['speed'] = grouped['speed'].mean()
+    df_features = df_features.loc[df_features['speed'] > 0.01]
+    
+    df_features = df_features.dropna()
     
     return df_features[['speed','distance','steps', 'time']]
     
