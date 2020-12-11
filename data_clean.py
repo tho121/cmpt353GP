@@ -75,7 +75,7 @@ def get_features(data, size):
     df_features['steps'] = grouped['v3'].apply(get_step_count)
     df_features['speed'] = grouped['speed'].mean()
     
-    return df_features[['speed','distance','steps']]
+    return df_features[['speed','distance','steps', 'time']]
     
 def getDistanceFromLatLon(lat,lon):
     R = 6371; # Radius of the earth in km
@@ -91,6 +91,12 @@ def getDistanceFromLatLon(lat,lon):
 def deg2rad(deg):
     return deg * (np.pi/180)
     
+def createDataframe(filename, group_size, height):
+    df = clean_data(filename)
+    df_feat = get_features(df, group_size)
+    df_feat['height'] = height
+    
+    return df_feat
     
 def main():
     # Referenced from: https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
